@@ -95,4 +95,18 @@ export const createRole = (data) => api.post('/roles/create', data);
 export const updateRole = (id, data) => api.put(`/roles/update/${id}`, data);
 export const deleteRole = (id) => api.delete(`/roles/delete/${id}`);
 
+// ==================== PAYMENT & PAYPAL APIS ====================
+export const createPayment = (data) => api.post('/payments/create', data);
+export const getPaymentById = (id) => api.get(`/payments/${id}`);
+export const createPayPalPayment = (paymentId) => api.post(`/paypal/create/${paymentId}`);
+
+// ==================== TIME SLOT API ====================
+export const getTimeSlotById = (id) => api.get(`/timeslots/${id}`); // Đảm bảo endpoint này tồn tại
+// Thêm endpoint để lấy thông tin giá chi tiết
+export const getPitchPriceInfo = (targetType, targetId) =>
+    api.get(`/price/${targetType}/${targetId}`);
+
+export const calculatePaymentAmount = (data) =>
+    api.post('/payment/calculate', data);
+
 export default api;

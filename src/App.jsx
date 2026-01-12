@@ -21,6 +21,10 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/user/UserManagement';
 import RoleManagement from './pages/admin/role/RoleManagement';
 import BookingManagement from './pages/owner/booking/BookingManagement';
+// Thêm imports
+import PayPalCheckout from './pages/PayPalCheckout';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
 
 const { Content } = Layout;
 
@@ -37,6 +41,11 @@ function App() {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/booking/pitch/:pitchId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
             <Route path="/booking/pitch-group/:groupId" element={<ProtectedRoute><Booking /></ProtectedRoute>} />
+            // Thêm routes trong Routes component
+            <Route path="/paypal-checkout/:paymentId" element={<ProtectedRoute><PayPalCheckout /></ProtectedRoute>} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/cancel" element={<PaymentCancel />} />
+            <Route path="/payment/error" element={<PaymentResult />} />
             {/* Role-based */}
             <Route
               path="/admin/dashboard"

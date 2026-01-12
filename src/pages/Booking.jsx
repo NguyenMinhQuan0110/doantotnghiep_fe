@@ -9,6 +9,8 @@ import {
     createBooking
 } from '../services/api';
 import useAuth from '../hooks/useAuth';
+// Thêm import
+import { createPayment } from '../services/api';
 
 const { Option } = Select;
 
@@ -122,15 +124,49 @@ const Booking = () => {
                 targetId: parseInt(pitchId || groupId),
                 bookingDate: values.bookingDate.format('YYYY-MM-DD'),
             };
-            await createBooking(bookingData);
-            // ✅ In dữ liệu gửi sang BE ra console
-            console.log('Dữ liệu gửi sang BE:', bookingData);
-            message.success('Đặt sân thành công');
-            navigate(`/complexes/${complexIdFromQuery}`);
+
+            console.log('📤 Dữ liệu booking gửi sang BE:', bookingData);
+            const bookingRes = await createBooking(bookingData);
+
+            // 2. Tìm thông tin timeslot để lấy giá
+            const selectedTimeSlot = timeSlots.find(slot => slot.id === values.timeSlotId);
+            if (!selectedTimeSlot) {
+                throw new Error('Không tìm thấy thông tin khung giờ');
+            }
+
+            // 3. Tạo payment với phương thức PAYPAL
+            const paymentData = {
+                bookingId: bookingRes.data.id,
+                amount: selectedTimeSlot.price,
+                method: 'paypal',  // QUAN TRỌNG: Phải là 'PAYPAL'
+                status: 'unpaid'
+            };
+
+            console.log('💰 Dữ liệu payment gửi sang BE:', paymentData);
+            const paymentRes = await createPayment(paymentData);
+
+            // 4. Chuyển hướng đến trang thanh toán PayPal
+            message.success('✅ Đặt sân thành công! Vui lòng thanh toán để xác nhận.');
+
+            // Thêm delay để user thấy thông báo
+            setTimeout(() => {
+                navigate(`/paypal-checkout/${paymentRes.data.id}`);
+            }, 1500);
+            // await createBooking(bookingData);
+            // // ✅ In dữ liệu gửi sang BE ra console
+            // console.log('Dữ liệu gửi sang BE:', bookingData);
+            // message.success('Đặt sân thành công');
+            // navigate(`/complexes/${complexIdFromQuery}`);
         } catch (error) {
-            console.error(error);
-            message.error('Lỗi khi đặt sân');
-            console.log('Dữ liệu gửi sang BE:', bookingData);
+            console.error('❌ Lỗi khi đặt sân:', error);
+
+            // Hiển thị thông báo lỗi chi tiết hơn
+            const errorMessage = error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                'Lỗi khi đặt sân';
+
+            message.error(`Lỗi: ${errorMessage}`);
         } finally {
             setLoading(false);
         }
