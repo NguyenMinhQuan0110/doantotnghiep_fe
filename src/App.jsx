@@ -25,6 +25,7 @@ import BookingManagement from './pages/owner/booking/BookingManagement';
 import PayPalCheckout from './pages/PayPalCheckout';
 import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
+import PaymentResult from './pages/PaymentResult';
 
 const { Content } = Layout;
 

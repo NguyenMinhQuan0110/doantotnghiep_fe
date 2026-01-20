@@ -33,6 +33,14 @@ export const getNearbyComplexes = (latitude, longitude, radiusKm) => {
         params: { lat: latitude, lng: longitude, radius: radiusKm }
     });
 };
+// Thêm vào phần export const (sau updateAvatar)
+export const updateComplexAvatar = (complexId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post(`/complexes/avatarCom/${complexId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+};
 export const createPitch = (data) => api.post('/pitches/create', data);
 export const updatePitch = (id, data) => api.put(`/pitches/update/${id}`, data);
 export const updatePitchStatus = (id, status) =>

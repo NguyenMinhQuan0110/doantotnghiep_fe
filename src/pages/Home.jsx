@@ -17,7 +17,8 @@ import {
     Tag,
     Spin,
     Divider,
-    Tooltip
+    Tooltip,
+    Image
 } from 'antd';
 import {
     SearchOutlined,
@@ -27,7 +28,8 @@ import {
     ClockCircleOutlined,
     CloseOutlined,
     AimOutlined,
-    RadiusSettingOutlined
+    RadiusSettingOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -342,6 +344,51 @@ const Home = () => {
         return <Tag color={color}>{text}</Tag>;
     };
 
+    // 🖼️ Hàm hiển thị ảnh đại diện - SỬA LỖI Ở ĐÂY
+    const renderAvatar = (avatarCom, complexName) => {
+        if (avatarCom) {
+            return (
+                <Image
+                    src={avatarCom}
+                    alt="Ảnh đại diện"
+                    width="100%"
+                    height={160}
+                    style={{ objectFit: 'cover' }}
+                    fallback={
+                        <div style={{
+                            height: 160,
+                            background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontSize: 20,
+                            fontWeight: 'bold'
+                        }}>
+                            {complexName ? complexName.charAt(0).toUpperCase() : <UserOutlined />}
+                        </div>
+                    }
+                />
+            );
+        }
+
+        // Nếu không có ảnh, hiển thị gradient với chữ cái đầu
+        return (
+            <div style={{
+                height: 160,
+                background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: 20,
+                fontWeight: 'bold'
+            }}>
+                {complexName ? complexName.charAt(0).toUpperCase() : <UserOutlined />}
+            </div>
+        );
+    };
+
     return (
         <div style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
             {/* Header */}
@@ -606,20 +653,8 @@ const Home = () => {
                                     hoverable
                                     onClick={() => handleNavigateDetail(complex.id)}
                                     style={{ height: '100%' }}
-                                    cover={
-                                        <div style={{
-                                            height: 160,
-                                            background: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            color: 'white',
-                                            fontSize: 20,
-                                            fontWeight: 'bold'
-                                        }}>
-                                            {complex.name.charAt(0)}
-                                        </div>
-                                    }
+                                    // SỬA LỖI Ở ĐÂY: truyền đúng tham số
+                                    cover={renderAvatar(complex.avatarCom, complex.name)}
                                     actions={[
                                         <Button type="link" onClick={(e) => {
                                             e.stopPropagation();
@@ -658,6 +693,14 @@ const Home = () => {
                                                         {complex.districtName}, {complex.provinceName}
                                                     </Text>
                                                 </div>
+                                                {complex.ownerName && (
+                                                    <div>
+                                                        <Text type="secondary">
+                                                            <UserOutlined style={{ marginRight: 4 }} />
+                                                            Chủ sân: {complex.ownerName}
+                                                        </Text>
+                                                    </div>
+                                                )}
                                             </Space>
                                         }
                                     />
